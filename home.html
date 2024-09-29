@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokeDex Assistant</title>
+    <link rel="stylesheet" href="home.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <div class="dark">
+        <div class="headbox" id="headbox">
+            <h1>PokéDex</h1>
+            <label for="start" id="explore">Explore the PokéDex</label>
+        </div>
+        <div class="chatbox" id="chatbox">
+            <div class="c1">
+                <img class="logo" src="images/l.png" alt="logo">
+                <p class="logotext">PokéDex Assistant</p>
+            </div>
+            <div class="input-group w-lg-50 w-md-75 w-sm-100 p-3 fixed-bottom" style="margin: 0 auto; ">
+                <input type="text" class="form-control" id="chat-input"
+                  style="background-color: #3A4556; border: #3A4556; color: #fff;">
+            </div>
+            <div class="answer"></div>
+            <div class="write">
+                <input type="text" id="q/a" placeholder="Enter text here">
+                <button id="gpt-button" >Submit</button> <!-- Submit button -->
+                <div class="attachment">
+                    <div class="inputbox">
+                        <input type="file" name="file" id="file" accept=".pdf" />
+                        <label for="file" class="as"><i class="fa-solid fa-paperclip"></i></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="home.js"></script>
+    <script>
+        // AJAX call to submit the prompt
+        document.getElementById('submit').addEventListener('click', function () {
+            const prompt = document.getElementById('q/a').value;
+
+            // Ensure the prompt is not empty
+            if (prompt.trim() === "") {
+                alert("Please enter a prompt.");
+                return;
+            }
+
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt }) // Send the prompt as JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.response) {
+                    document.querySelector('.answer').innerText = data.response; // Display the response
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.querySelector('.answer').innerText = 'Sorry, there was an error.';
+            });
+        });
+    </script>
+</body>
+
+</html>
